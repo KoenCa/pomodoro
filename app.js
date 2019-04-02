@@ -1,16 +1,28 @@
 var pomodoroController = (function() {
   var data = {
-    minutes: 25,
-    seconds: 0
+    timeInSec: 1500,
+    minutesConverted: 0,
+    secondsConverted: 0
   };
+
+  init();
+
+  function init() {
+    calculateTimeFromSeconds();
+  }
+
+  function calculateTimeFromSeconds() {
+    data.minutesConverted = parseInt(data.timeInSec / 60);
+    data.secondsConverted = parseInt(data.timeInSec % 60);
+  }
 
   var startTimer = function() {};
 
   return {
     getTime: function() {
       return {
-        minutes: data.minutes,
-        seconds: data.seconds
+        minutes: data.minutesConverted,
+        seconds: data.secondsConverted
       };
     }
   };
@@ -23,6 +35,12 @@ var UIController = (function() {
     timerSeconds: "timer-seconds"
   };
 
+  function formatTimeData(value) {
+    if (value === 0 || !value) return "00";
+    if (value >= 10) return value;
+    return "0" + value;
+  }
+
   return {
     getDomStrings: function() {
       return DOMstrings;
@@ -31,8 +49,8 @@ var UIController = (function() {
     setupTimer: function(minutes, seconds) {
       var minutesEl = document.getElementById(DOMstrings.timerMinutes);
       var secondsEl = document.getElementById(DOMstrings.timerSeconds);
-      minutesEl.innerText = minutes;
-      secondsEl.innerText = seconds;
+      minutesEl.innerText = formatTimeData(minutes);
+      secondsEl.innerText = formatTimeData(seconds);
     }
   };
 })();
@@ -42,10 +60,10 @@ var controller = (function(pomodoroController, UICtrl) {
     var DOM = UICtrl.getDomStrings();
   };
 
-  var setupUI = function() {
+  function setupUI() {
     var timeData = pomodoroController.getTime();
     UICtrl.setupTimer(timeData.minutes, timeData.seconds);
-  };
+  }
 
   return {
     init: function() {
