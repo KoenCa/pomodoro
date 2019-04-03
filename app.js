@@ -16,14 +16,20 @@ var pomodoroController = (function() {
     data.secondsConverted = parseInt(data.timeInSec % 60);
   }
 
-  var startTimer = function() {};
-
   return {
     getTime: function() {
       return {
         minutes: data.minutesConverted,
         seconds: data.secondsConverted
       };
+    },
+
+    startTimer: function(onTick) {
+      setInterval(function() {
+        data.timeInSec -= 1;
+        calculateTimeFromSeconds();
+        onTick();
+      }, 1000);
     }
   };
 })();
@@ -65,11 +71,16 @@ var controller = (function(pomodoroController, UICtrl) {
     UICtrl.setupTimer(timeData.minutes, timeData.seconds);
   }
 
+  function onTick() {
+    setupUI();
+  }
+
   return {
     init: function() {
       console.info("Application has started.");
       setupUI();
       setupEventListeners();
+      pomodoroController.startTimer(onTick);
     }
   };
 })(pomodoroController, UIController);
