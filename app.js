@@ -1,5 +1,6 @@
 var pomodoroController = (function() {
   var data = {
+    // divide this in defaults, timer and UI
     timeInSec: 1500,
     minutesConverted: 0,
     secondsConverted: 0
@@ -38,7 +39,10 @@ var UIController = (function() {
   // Object for all used DOM strings
   var DOMstrings = {
     timerMinutes: "timer-minutes",
-    timerSeconds: "timer-seconds"
+    timerSeconds: "timer-seconds",
+    startTimerBtn: "start-timer",
+    pauseTimerBtn: "pause-timer",
+    stopTimerBtn: "stop-timer"
   };
 
   function formatTimeData(value) {
@@ -64,11 +68,19 @@ var UIController = (function() {
 var controller = (function(pomodoroController, UICtrl) {
   var setupEventListeners = function() {
     var DOM = UICtrl.getDomStrings();
+
+    document
+      .getElementById(DOM.startTimerBtn)
+      .addEventListener("click", onStartTimer);
   };
 
   function setupUI() {
     var timeData = pomodoroController.getTime();
     UICtrl.setupTimer(timeData.minutes, timeData.seconds);
+  }
+
+  function onStartTimer() {
+    pomodoroController.startTimer(onTick);
   }
 
   function onTick() {
@@ -80,7 +92,6 @@ var controller = (function(pomodoroController, UICtrl) {
       console.info("Application has started.");
       setupUI();
       setupEventListeners();
-      pomodoroController.startTimer(onTick);
     }
   };
 })(pomodoroController, UIController);
