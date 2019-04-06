@@ -13,17 +13,14 @@ var pomodoroController = (function() {
     }
   };
 
-  init();
-
-  function init() {
-    setupTimerData();
-    calculateTimeFromRemainingSeconds();
-  }
-
   function setupTimerData() {
     if (data.timer.timeInSecRemaining === 0) {
-      data.timer.timeInSecRemaining = data.defaults.timeInSec;
+      resetRemainingTime();
     }
+  }
+
+  function resetRemainingTime() {
+    data.timer.timeInSecRemaining = data.defaults.timeInSec;
   }
 
   function calculateTimeFromRemainingSeconds() {
@@ -33,6 +30,11 @@ var pomodoroController = (function() {
   }
 
   return {
+    init: function() {
+      setupTimerData();
+      calculateTimeFromRemainingSeconds();
+    },
+
     getTime: function() {
       return {
         minutes: data.minutesConverted,
@@ -40,12 +42,23 @@ var pomodoroController = (function() {
       };
     },
 
+    isTimerRunning: function() {
+      return Boolean(data.timer.intervalId);
+    },
+
     startTimer: function(onTick) {
-      setInterval(function() {
+      if (data.timer.intervalId) return;
+
+      data.timer.intervalId = setInterval(function() {
         data.timer.timeInSecRemaining -= 1;
         calculateTimeFromRemainingSeconds();
         onTick();
       }, 1000);
+    },
+
+    pauseTimer: function() {
+      clearInterval(data.timer.intervalId);
+      data.timer.intervalId = null;
     }
   };
 })();
@@ -76,6 +89,14 @@ var UIController = (function() {
       var secondsEl = document.getElementById(DOMstrings.timerSeconds);
       minutesEl.innerText = formatTimeData(minutes);
       secondsEl.innerText = formatTimeData(seconds);
+    },
+
+    disableBtn: function(buttonId) {
+      document.getElementById(buttonId).setAttribute("disabled", "");
+    },
+
+    enableBtn: function(buttonId) {
+      document.getElementById(buttonId).removeAttribute("disabled");
     }
   };
 })();
@@ -87,25 +108,39 @@ var controller = (function(pomodoroController, UICtrl) {
     document
       .getElementById(DOM.startTimerBtn)
       .addEventListener("click", onStartTimer);
+
+    document
+      .getElementById(DOM.pauseTimerBtn)
+      .addEventListener("click", onPauseTimer);
   };
 
-  function setupUI() {
+  function setupTimerUI() {
     var timeData = pomodoroController.getTime();
     UICtrl.setupTimer(timeData.minutes, timeData.seconds);
   }
 
   function onStartTimer() {
     pomodoroController.startTimer(onTick);
+    UICtrl.disableBtn(UICtrl.getDomStrings().startTimerBtn);
+    UICtrl.enableBtn(UICtrl.getDomStrings().pauseTimerBtn);
   }
 
   function onTick() {
-    setupUI();
+    setupTimerUI();
+  }
+
+  function onPauseTimer() {
+    if (!pomodoroController.isTimerRunning()) return;
+    pomodoroController.pauseTimer();
+    UICtrl.disableBtn(UICtrl.getDomStrings().pauseTimerBtn);
+    UICtrl.enableBtn(UICtrl.getDomStrings().startTimerBtn);
   }
 
   return {
     init: function() {
       console.info("Application has started.");
-      setupUI();
+      pomodoroController.init();
+      setupTimerUI();
       setupEventListeners();
     }
   };
