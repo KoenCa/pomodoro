@@ -29,6 +29,11 @@ var pomodoroController = (function() {
     data.secondsConverted = parseInt(timeInSecRemaining % 60);
   }
 
+  function disableIntervalTimer() {
+    clearInterval(data.timer.intervalId);
+    data.timer.intervalId = null;
+  }
+
   return {
     init: function() {
       setupTimerData();
@@ -57,8 +62,13 @@ var pomodoroController = (function() {
     },
 
     pauseTimer: function() {
-      clearInterval(data.timer.intervalId);
-      data.timer.intervalId = null;
+      disableIntervalTimer();
+    },
+
+    stopTimer: function() {
+      disableIntervalTimer();
+      resetRemainingTime();
+      calculateTimeFromRemainingSeconds();
     }
   };
 })();
@@ -112,6 +122,10 @@ var controller = (function(pomodoroController, UICtrl) {
     document
       .getElementById(DOM.pauseTimerBtn)
       .addEventListener("click", onPauseTimer);
+
+    document
+      .getElementById(DOM.stopTimerBtn)
+      .addEventListener("click", onStopTimer);
   };
 
   function setupTimerUI() {
@@ -121,8 +135,11 @@ var controller = (function(pomodoroController, UICtrl) {
 
   function onStartTimer() {
     pomodoroController.startTimer(onTick);
-    UICtrl.disableBtn(UICtrl.getDomStrings().startTimerBtn);
-    UICtrl.enableBtn(UICtrl.getDomStrings().pauseTimerBtn);
+    var DOMstrings = UICtrl.getDomStrings();
+
+    UICtrl.disableBtn(DOMstrings.startTimerBtn);
+    UICtrl.enableBtn(DOMstrings.pauseTimerBtn);
+    UICtrl.enableBtn(DOMstrings.stopTimerBtn);
   }
 
   function onTick() {
@@ -131,9 +148,21 @@ var controller = (function(pomodoroController, UICtrl) {
 
   function onPauseTimer() {
     if (!pomodoroController.isTimerRunning()) return;
+    var DOMstrings = UICtrl.getDomStrings();
+
     pomodoroController.pauseTimer();
-    UICtrl.disableBtn(UICtrl.getDomStrings().pauseTimerBtn);
-    UICtrl.enableBtn(UICtrl.getDomStrings().startTimerBtn);
+    UICtrl.disableBtn(DOMstrings.pauseTimerBtn);
+    UICtrl.enableBtn(DOMstrings.startTimerBtn);
+  }
+
+  function onStopTimer() {
+    var DOMstrings = UICtrl.getDomStrings();
+
+    pomodoroController.stopTimer();
+    UICtrl.enableBtn(DOMstrings.startTimerBtn);
+    UICtrl.disableBtn(DOMstrings.pauseTimerBtn);
+    UICtrl.disableBtn(DOMstrings.stopTimerBtn);
+    setupTimerUI();
   }
 
   return {
