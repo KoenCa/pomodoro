@@ -112,7 +112,7 @@ var UIController = (function() {
 })();
 
 var controller = (function(pomodoroController, UICtrl) {
-  var setupEventListeners = function() {
+  function setupEventListeners() {
     var DOM = UICtrl.getDomStrings();
 
     document
@@ -126,7 +126,15 @@ var controller = (function(pomodoroController, UICtrl) {
     document
       .getElementById(DOM.stopTimerBtn)
       .addEventListener("click", onStopTimer);
-  };
+  }
+
+  function initUI() {
+    var DOMstrings = UICtrl.getDomStrings();
+
+    setupTimerUI();
+    UICtrl.disableBtn(DOMstrings.pauseTimerBtn);
+    UICtrl.disableBtn(DOMstrings.stopTimerBtn);
+  }
 
   function setupTimerUI() {
     var timeData = pomodoroController.getTime();
@@ -169,7 +177,7 @@ var controller = (function(pomodoroController, UICtrl) {
     init: function() {
       console.info("Application has started.");
       pomodoroController.init();
-      setupTimerUI();
+      initUI();
       setupEventListeners();
     }
   };
