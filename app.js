@@ -57,7 +57,7 @@ var pomodoroController = (function() {
       data.timer.intervalId = setInterval(function() {
         data.timer.timeInSecRemaining -= 1;
         calculateTimeFromRemainingSeconds();
-        onTick();
+        onTick(data.timer.timeInSecRemaining <= 0);
       }, 1000);
     },
 
@@ -150,8 +150,12 @@ var controller = (function(pomodoroController, UICtrl) {
     UICtrl.enableBtn(DOMstrings.stopTimerBtn);
   }
 
-  function onTick() {
+  function onTick(timeIsUp) {
     setupTimerUI();
+    if (timeIsUp) {
+      onStopTimer();
+      alert("Pomodoro done");
+    }
   }
 
   function onPauseTimer() {
