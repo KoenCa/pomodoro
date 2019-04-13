@@ -154,7 +154,7 @@ var controller = (function(pomodoroController, UICtrl) {
     setupTimerUI();
     if (timeIsUp) {
       onStopTimer();
-      alert("Pomodoro done");
+      var notification = new Notification("Pomodoro done!");
     }
   }
 
