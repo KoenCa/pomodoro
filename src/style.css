@@ -8,3 +8,19 @@ body {
   margin: auto;
   background: #fafafa;
 }
+
+.timer {
+  display: flex;
+  flex-direction: column;
+}
+
+.timer__time {
+  display: flex;
+  align-self: center;
+  font-size: 100px;
+}
+
+
+.timer__controls {
+  align-self: center;
+}

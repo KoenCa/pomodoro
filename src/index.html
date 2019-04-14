@@ -7,16 +7,20 @@
   </head>
 
   <body>
-    <h1>Pomodoro</h1>
-    <b id="timer-minutes">--</b>
-    <b>:</b>
-    <b id="timer-seconds">--</b>
-    <div>
-      <button type="button" id="start-timer">Start</button>
-      <button type="button" id="pause-timer">Pause</button>
-      <button type="button" id="stop-timer">Stop</button>
-    </div>
-
+    <main>
+      <section class="timer">
+        <div class="timer__time">
+          <span id="timer-minutes">--</span>
+          <span>:</span>
+          <span id="timer-seconds">--</span>
+        </div>
+        <div class="timer__controls">
+          <button type="button" id="start-timer">Start</button>
+          <button type="button" id="pause-timer">Pause</button>
+          <button type="button" id="stop-timer">Stop</button>
+        </div>
+      </section>
+    </main>
     <script src="app.js"></script>
   </body>
 </html>
