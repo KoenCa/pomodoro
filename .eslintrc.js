@@ -4,7 +4,7 @@ module.exports = {
     es6: true,
     commonjs: true
   },
-  plugins: ["compat", "prettier"],
+  plugins: ["compat", "prettier", "plugin:node/recommended"],
   extends: ["eslint:recommended"],
   parser: "babel-eslint",
   parserOptions: {
@@ -16,6 +16,6 @@ module.exports = {
   },
   rules: {
     "prettier/prettier": "error",
-    "compat/compat": "off",
+    "compat/compat": "off"
   }
 };
