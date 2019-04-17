@@ -25,8 +25,8 @@ var pomodoroController = (function() {
 
   function calculateTimeFromRemainingSeconds() {
     var timeInSecRemaining = data.timer.timeInSecRemaining;
-    data.minutesConverted = parseInt(timeInSecRemaining / 60);
-    data.secondsConverted = parseInt(timeInSecRemaining % 60);
+    data.UI.minutesConverted = Math.trunc(timeInSecRemaining / 60);
+    data.UI.secondsConverted = Math.trunc(timeInSecRemaining % 60);
   }
 
   function disableIntervalTimer() {
@@ -42,8 +42,8 @@ var pomodoroController = (function() {
 
     getTime: function() {
       return {
-        minutes: data.minutesConverted,
-        seconds: data.secondsConverted
+        minutes: data.UI.minutesConverted,
+        seconds: data.UI.secondsConverted
       };
     },
 
@@ -51,7 +51,7 @@ var pomodoroController = (function() {
       return Boolean(data.timer.intervalId);
     },
 
-    startTimer: function(onTick) {
+    startTimer: function(onTick: Function) {
       if (data.timer.intervalId) return;
 
       data.timer.intervalId = setInterval(function() {
