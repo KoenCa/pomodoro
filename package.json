@@ -1,72 +1,16 @@
 {
   "name": "pomodoro",
-  "productName": "Pomodoro Timer",
   "version": "1.0.0",
-  "description": "My Pomodoro timer",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "eslint src --color"
-  },
-  "keywords": [],
-  "author": "Air",
+  "description": "Timer to increase productivity by splitting work in small tasks with frequent small breaks.",
+  "main": "index.js",
+  "repository": "https://github.com/KoenCa/pomodoro.git",
+  "author": "Koen Castermans <castermanskoen@msn.com>",
   "license": "MIT",
-  "config": {
-    "forge": {
-      "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
-        "darwin": [
-          "zip"
-        ],
-        "linux": [
-          "deb",
-          "rpm"
-        ]
-      },
-      "electronPackagerConfig": {
-        "packageManager": "yarn"
-      },
-      "electronWinstallerConfig": {
-        "name": "pomodoro_2"
-      },
-      "electronInstallerDebian": {},
-      "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "",
-        "name": ""
-      },
-      "windowsStoreConfig": {
-        "packageName": "",
-        "name": "pomodoro2"
-      }
-    }
-  },
-  "dependencies": {
-    "electron-compile": "^6.4.4",
-    "electron-squirrel-startup": "^1.0.0"
+  "scripts": {
+    "dev": "parcel ./src/index.html",
+    "build": "parcel build ./src/index.html"
   },
   "devDependencies": {
-    "babel-eslint": "10.0.1",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "electron": "^4.1.4",
-    "electron-forge": "^5.2.4",
-    "electron-prebuilt-compile": "4.0.0",
-    "electron-reload": "^1.4.0",
-    "eslint": "^5.16.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-compat": "^3.1.1",
-    "eslint-plugin-import": "^2.17.1",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-promise": "^4.1.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "prettier": "^1.17.0"
+    "parcel-bundler": "^1.12.3"
   }
 }
