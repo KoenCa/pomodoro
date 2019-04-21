@@ -1,3 +1,6 @@
+import { TimerWorkerMessage } from "./typescript/interfaces";
+import { TimerAction } from "./typescript/enums";
+
 var pomodoroController = (function() {
   var data = {
     defaults: {
@@ -10,7 +13,8 @@ var pomodoroController = (function() {
     UI: {
       minutesConverted: 0,
       secondsConverted: 0
-    }
+    },
+    webWorker: new Worker("./webworker/timer.ts")
   };
 
   function setupTimerData() {
@@ -52,13 +56,21 @@ var pomodoroController = (function() {
     },
 
     startTimer: function(onTick: Function) {
-      if (data.timer.intervalId) return;
+      const startMsg = <TimerWorkerMessage>{
+        action: TimerAction.Start
+      }
 
-      data.timer.intervalId = setInterval(function() {
+      const webWorker = data.webWorker;
+
+      webWorker.postMessage(startMsg);
+
+      webWorker.onmessage = (e) => {
+        if (e.data.action != TimerAction.Tick) return;
+
         data.timer.timeInSecRemaining -= 1;
         calculateTimeFromRemainingSeconds();
         onTick(data.timer.timeInSecRemaining <= 0);
-      }, 1000);
+      }
     },
 
     pauseTimer: function() {
