@@ -31,8 +31,15 @@ var pomodoroController = (function() {
     data.UI.secondsConverted = Math.trunc(timeInSecRemaining % 60);
   }
 
+  function requestNotificationPermission() {
+    if (Notification.permission == "denied") return;
+
+    Notification.requestPermission();
+  }
+
   return {
     init: function() {
+      requestNotificationPermission();
       setupTimerData();
       calculateTimeFromRemainingSeconds();
     },
@@ -82,10 +89,10 @@ var UIController = (function() {
     stopTimerBtn: "stop-timer"
   };
 
-  function formatTimeData(value) {
+  function formatTimeData(value: number) {
     if (value === 0 || !value) return "00";
-    if (value >= 10) return value;
-    return "0" + value;
+    if (value >= 10) return `${value}`;
+    return `0${value}`;
   }
 
   return {
@@ -93,7 +100,7 @@ var UIController = (function() {
       return DOMstrings;
     },
 
-    setupTimer: function(minutes, seconds) {
+    setupTimer: function(minutes: number, seconds: number) {
       var minutesEl = document.getElementById(DOMstrings.timerMinutes);
       var secondsEl = document.getElementById(DOMstrings.timerSeconds);
       minutesEl.innerText = formatTimeData(minutes);
