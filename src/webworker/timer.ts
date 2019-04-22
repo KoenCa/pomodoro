@@ -1,28 +1,23 @@
-import { TimerWorkerMessage } from "../typescript/interfaces";
 import { TimerAction } from "../typescript/enums"
 
 let intervalId;
 
 onmessage = (e) => {
-  const { action } = e.data;
-  switch (action) {
+  switch (e.data) {
     case TimerAction.Start:
       intervalId = setInterval(() => {
-        const tickMsg = <TimerWorkerMessage> {
-          action: TimerAction.Tick
-        };
-        postMessage(tickMsg);
+        postMessage(TimerAction.Tick);
       }, 1000);
 
       break;
 
     case TimerAction.Stop:
-      console.log("stop");
+      clearInterval(intervalId);
 
       break;
 
     case TimerAction.Pause:
-      console.log("pause");
+      clearInterval(intervalId);
 
       break;
 

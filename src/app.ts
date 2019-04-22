@@ -1,4 +1,3 @@
-import { TimerWorkerMessage } from "./typescript/interfaces";
 import { TimerAction } from "./typescript/enums";
 
 var pomodoroController = (function() {
@@ -7,8 +6,7 @@ var pomodoroController = (function() {
       timeInSec: 1500
     },
     timer: {
-      timeInSecRemaining: 0,
-      intervalId: null
+      timeInSecRemaining: 0
     },
     UI: {
       minutesConverted: 0,
@@ -33,11 +31,6 @@ var pomodoroController = (function() {
     data.UI.secondsConverted = Math.trunc(timeInSecRemaining % 60);
   }
 
-  function disableIntervalTimer() {
-    clearInterval(data.timer.intervalId);
-    data.timer.intervalId = null;
-  }
-
   return {
     init: function() {
       setupTimerData();
@@ -51,21 +44,13 @@ var pomodoroController = (function() {
       };
     },
 
-    isTimerRunning: function() {
-      return Boolean(data.timer.intervalId);
-    },
-
     startTimer: function(onTick: Function) {
-      const startMsg = <TimerWorkerMessage>{
-        action: TimerAction.Start
-      }
-
       const webWorker = data.webWorker;
 
-      webWorker.postMessage(startMsg);
+      webWorker.postMessage(TimerAction.Start);
 
       webWorker.onmessage = (e) => {
-        if (e.data.action != TimerAction.Tick) return;
+        if (e.data != TimerAction.Tick) return;
 
         data.timer.timeInSecRemaining -= 1;
         calculateTimeFromRemainingSeconds();
@@ -74,11 +59,13 @@ var pomodoroController = (function() {
     },
 
     pauseTimer: function() {
-      disableIntervalTimer();
+      const webWorker = data.webWorker;
+      webWorker.postMessage(TimerAction.Pause)
     },
 
     stopTimer: function() {
-      disableIntervalTimer();
+      const webWorker = data.webWorker;
+      webWorker.postMessage(TimerAction.Stop);
       resetRemainingTime();
       calculateTimeFromRemainingSeconds();
     }
@@ -171,7 +158,6 @@ var controller = (function(pomodoroController, UICtrl) {
   }
 
   function onPauseTimer() {
-    if (!pomodoroController.isTimerRunning()) return;
     var DOMstrings = UICtrl.getDomStrings();
 
     pomodoroController.pauseTimer();
