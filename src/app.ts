@@ -3,10 +3,13 @@ import { TimerAction } from "./typescript/enums";
 var pomodoroController = (function() {
   var data = {
     defaults: {
-      timeInSec: 1500
+      timeInSec: 1500,
+      breakTimeInSec: 300
     },
     timer: {
-      timeInSecRemaining: 0
+      timeInSecRemaining: 0,
+      breakTimeInSecRemaining: 0,
+      isBreak: false
     },
     UI: {
       minutesConverted: 0,
@@ -22,19 +25,39 @@ var pomodoroController = (function() {
   }
 
   function resetRemainingTime() {
-    data.timer.timeInSecRemaining = data.defaults.timeInSec;
+    if (data.timer.isBreak) {
+      data.timer.breakTimeInSecRemaining = data.defaults.breakTimeInSec;
+    } else {
+      data.timer.timeInSecRemaining = data.defaults.timeInSec;
+    }
   }
 
   function calculateTimeFromRemainingSeconds() {
-    var timeInSecRemaining = data.timer.timeInSecRemaining;
+    let timeInSecRemaining: number = getRemainingTime();
     data.UI.minutesConverted = Math.trunc(timeInSecRemaining / 60);
     data.UI.secondsConverted = Math.trunc(timeInSecRemaining % 60);
+  }
+
+  function getRemainingTime() {
+    if (data.timer.isBreak) {
+       return data.timer.breakTimeInSecRemaining
+    } else {
+      return data.timer.timeInSecRemaining;
+    }
   }
 
   function requestNotificationPermission() {
     if (Notification.permission == "denied") return;
 
     Notification.requestPermission();
+  }
+
+  function reduceRemaingTime() {
+    if (data.timer.isBreak) {
+      data.timer.breakTimeInSecRemaining -= 1
+    } else {
+      data.timer.timeInSecRemaining -= 1;
+    }
   }
 
   return {
@@ -59,9 +82,9 @@ var pomodoroController = (function() {
       webWorker.onmessage = (e) => {
         if (e.data != TimerAction.Tick) return;
 
-        data.timer.timeInSecRemaining -= 1;
+        reduceRemaingTime();
         calculateTimeFromRemainingSeconds();
-        onTick(data.timer.timeInSecRemaining <= 0);
+        onTick(getRemainingTime() <= 0);
       }
     },
 
@@ -75,6 +98,14 @@ var pomodoroController = (function() {
       webWorker.postMessage(TimerAction.Stop);
       resetRemainingTime();
       calculateTimeFromRemainingSeconds();
+    },
+
+    toggleBreakTimer: function() {
+      data.timer.isBreak = !data.timer.isBreak;
+    },
+
+    isBreakTimer: function() {
+      return data.timer.isBreak;
     }
   };
 })();
@@ -159,8 +190,17 @@ var controller = (function(pomodoroController, UICtrl) {
   function onTick(timeIsUp) {
     setupTimerUI();
     if (timeIsUp) {
+      pomodoroController.toggleBreakTimer();
       onStopTimer();
-      var notification = new Notification("Pomodoro done!");
+      showNotification();
+    }
+  }
+
+  function showNotification() {
+    if (pomodoroController.isBreakTimer()) {
+      new Notification("Pomodoro done!");
+    } else {
+      new Notification("Break done!");
     }
   }
 
