@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link type="text/css" rel="stylesheet" href="style.css" />
     <title>Pomodoro</title>
   </head>
 
@@ -15,9 +14,15 @@
           <span id="timer-seconds">--</span>
         </div>
         <div class="timer__controls">
-          <button type="button" id="start-timer">Start</button>
-          <button type="button" id="pause-timer">Pause</button>
-          <button type="button" id="stop-timer">Stop</button>
+          <button class="button" type="button" id="start-timer">
+            <img class="button__icon" src="./assets/icons/play.svg" alt="play icon">
+          </button>
+          <button class="button" type="button" id="pause-timer">
+            <img class="button__icon" src="./assets/icons/pause.svg" alt="pause icon">
+          </button>
+          <button class="button" type="button" id="stop-timer">
+            <img class="button__icon" src="./assets/icons/stop.svg" alt="stop icon">
+          </button>
         </div>
       </section>
     </main>
