@@ -1,5 +1,5 @@
 import {
-  init,
+  init as initPomodoroController,
   getTime,
   startTimer,
   pauseTimer,
@@ -8,47 +8,17 @@ import {
   isBreakTimer
 } from "./controllers/pomodoro_controller";
 
-var UIController = (function() {
-  // Object for all used DOM strings
-  var DOMstrings = {
-    timerMinutes: "timer-minutes",
-    timerSeconds: "timer-seconds",
-    startTimerBtn: "start-timer",
-    pauseTimerBtn: "pause-timer",
-    stopTimerBtn: "stop-timer"
-  };
+import {
+  getDomStrings,
+  setupTimer,
+  disableBtn,
+  enableBtn
+} from "./controllers/ui_controller";
 
-  function formatTimeData(value: number) {
-    if (value === 0 || !value) return "00";
-    if (value >= 10) return `${value}`;
-    return `0${value}`;
-  }
 
-  return {
-    getDomStrings: function() {
-      return DOMstrings;
-    },
-
-    setupTimer: function(minutes: number, seconds: number) {
-      var minutesEl = document.getElementById(DOMstrings.timerMinutes);
-      var secondsEl = document.getElementById(DOMstrings.timerSeconds);
-      minutesEl.innerText = formatTimeData(minutes);
-      secondsEl.innerText = formatTimeData(seconds);
-    },
-
-    disableBtn: function(buttonId) {
-      document.getElementById(buttonId).setAttribute("disabled", "");
-    },
-
-    enableBtn: function(buttonId) {
-      document.getElementById(buttonId).removeAttribute("disabled");
-    }
-  };
-})();
-
-var controller = (function(UICtrl) {
+var controller = (function() {
   function setupEventListeners() {
-    var DOM = UICtrl.getDomStrings();
+    var DOM = getDomStrings();
 
     document
       .getElementById(DOM.startTimerBtn)
@@ -64,25 +34,25 @@ var controller = (function(UICtrl) {
   }
 
   function initUI() {
-    var DOMstrings = UICtrl.getDomStrings();
+    var DOMstrings = getDomStrings();
 
     setupTimerUI();
-    UICtrl.disableBtn(DOMstrings.pauseTimerBtn);
-    UICtrl.disableBtn(DOMstrings.stopTimerBtn);
+    disableBtn(DOMstrings.pauseTimerBtn);
+    disableBtn(DOMstrings.stopTimerBtn);
   }
 
   function setupTimerUI() {
     var timeData = getTime();
-    UICtrl.setupTimer(timeData.minutes, timeData.seconds);
+    setupTimer(timeData.minutes, timeData.seconds);
   }
 
   function onStartTimer() {
     startTimer(onTick);
-    var DOMstrings = UICtrl.getDomStrings();
+    var DOMstrings = getDomStrings();
 
-    UICtrl.disableBtn(DOMstrings.startTimerBtn);
-    UICtrl.enableBtn(DOMstrings.pauseTimerBtn);
-    UICtrl.enableBtn(DOMstrings.stopTimerBtn);
+    disableBtn(DOMstrings.startTimerBtn);
+    enableBtn(DOMstrings.pauseTimerBtn);
+    enableBtn(DOMstrings.stopTimerBtn);
   }
 
   function onTick(timeIsUp) {
@@ -103,31 +73,32 @@ var controller = (function(UICtrl) {
   }
 
   function onPauseTimer() {
-    var DOMstrings = UICtrl.getDomStrings();
+    var DOMstrings = getDomStrings();
 
     pauseTimer();
-    UICtrl.disableBtn(DOMstrings.pauseTimerBtn);
-    UICtrl.enableBtn(DOMstrings.startTimerBtn);
+    disableBtn(DOMstrings.pauseTimerBtn);
+    enableBtn(DOMstrings.startTimerBtn);
   }
 
   function onStopTimer() {
-    var DOMstrings = UICtrl.getDomStrings();
+    var DOMstrings = getDomStrings();
 
     stopTimer();
-    UICtrl.enableBtn(DOMstrings.startTimerBtn);
-    UICtrl.disableBtn(DOMstrings.pauseTimerBtn);
-    UICtrl.disableBtn(DOMstrings.stopTimerBtn);
+    enableBtn(DOMstrings.startTimerBtn);
+    disableBtn(DOMstrings.pauseTimerBtn);
+    disableBtn(DOMstrings.stopTimerBtn);
     setupTimerUI();
   }
 
   return {
     init: function() {
       console.info("Application has started.");
-      init();
+      initPomodoroController();
       initUI();
       setupEventListeners();
     }
   };
-})(UIController);
+})();
+
 
 controller.init(); // initialise the app
