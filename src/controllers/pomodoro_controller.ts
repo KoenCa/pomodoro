@@ -98,6 +98,11 @@ export function stopTimer() {
   calculateTimeFromRemainingSeconds();
 }
 
+export function switchTimerMode() {
+  data.timer.isBreak = !data.timer.isBreak;
+  stopTimer();
+}
+
 export function toggleBreakTimer() {
   data.timer.isBreak = !data.timer.isBreak;
 }

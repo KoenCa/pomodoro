@@ -3,7 +3,8 @@ let DOMstrings = {
   timerSeconds: "timer-seconds",
   startTimerBtn: "start-timer",
   pauseTimerBtn: "pause-timer",
-  stopTimerBtn: "stop-timer"
+  stopTimerBtn: "stop-timer",
+  switchBtn: "switch-mode"
 };
 
 function formatTimeData(value: number): string {

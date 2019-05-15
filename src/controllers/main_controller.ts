@@ -5,7 +5,8 @@ import {
   pauseTimer,
   stopTimer,
   toggleBreakTimer,
-  isBreakTimer
+  isBreakTimer,
+  switchTimerMode
 } from "./pomodoro_controller";
 
 import {
@@ -29,6 +30,10 @@ function setupEventListeners() {
   document
     .getElementById(DOM.stopTimerBtn)
     .addEventListener("click", onStopTimer);
+
+  document
+    .getElementById(DOM.switchBtn)
+    .addEventListener("click", onSwitchTimerMode);
 }
 
 function initUI() {
@@ -72,7 +77,7 @@ function showNotification() {
 }
 
 function onPauseTimer() {
-  var DOMstrings = getDomStrings();
+  const DOMstrings = getDomStrings();
 
   pauseTimer();
   disableBtn(DOMstrings.pauseTimerBtn);
@@ -80,9 +85,19 @@ function onPauseTimer() {
 }
 
 function onStopTimer() {
-  var DOMstrings = getDomStrings();
+  const DOMstrings = getDomStrings();
 
   stopTimer();
+  enableBtn(DOMstrings.startTimerBtn);
+  disableBtn(DOMstrings.pauseTimerBtn);
+  disableBtn(DOMstrings.stopTimerBtn);
+  setupTimerUI();
+}
+
+function onSwitchTimerMode() {
+  const DOMstrings = getDomStrings();
+
+  switchTimerMode();
   enableBtn(DOMstrings.startTimerBtn);
   disableBtn(DOMstrings.pauseTimerBtn);
   disableBtn(DOMstrings.stopTimerBtn);
