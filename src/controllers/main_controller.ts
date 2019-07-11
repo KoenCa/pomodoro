@@ -6,7 +6,9 @@ import {
   stopTimer,
   toggleBreakTimer,
   isBreakTimer,
-  switchTimerMode
+  isPomodoroAlmostDone,
+  switchTimerMode,
+  getRemainingTimeString
 } from "./pomodoro_controller";
 
 import {
@@ -61,19 +63,25 @@ function onStartTimer() {
 function onTick(timeIsUp: boolean) {
   setupTimerUI();
 
+  if (isPomodoroAlmostDone() && !isBreakTimer()) {
+    showNotification(`${getRemainingTimeString()} remaining.`);
+  }
+
   if (timeIsUp) {
     toggleBreakTimer();
     onStopTimer();
-    showNotification();
+    showFinishedNotification();
   }
 }
 
-function showNotification() {
-  if (isBreakTimer()) {
-    new Notification("Pomodoro done!");
-  } else {
-    new Notification("Break done!");
-  }
+function showFinishedNotification() {
+  isBreakTimer()
+    ? showNotification("Pomodoro done!")
+    : showNotification("Break done!");
+}
+
+function showNotification(message: string) {
+  new Notification(message);
 }
 
 function onPauseTimer() {

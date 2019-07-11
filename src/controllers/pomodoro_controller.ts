@@ -3,7 +3,8 @@ import { TimerAction } from "../typescript/enums";
 let data = {
   defaults: {
     timeInSec: 1500,
-    breakTimeInSec: 300
+    breakTimeInSec: 300,
+    timeBeforeBreakInSec: 180
   },
   timer: {
     timeInSecRemaining: 0,
@@ -37,7 +38,7 @@ function calculateTimeFromRemainingSeconds() {
   data.UI.secondsConverted = Math.trunc(timeInSecRemaining % 60);
 }
 
-function getRemainingTime() {
+function getRemainingTime(): number {
   if (data.timer.isBreak) {
     return data.timer.breakTimeInSecRemaining;
   } else {
@@ -109,4 +110,37 @@ export function toggleBreakTimer() {
 
 export function isBreakTimer() {
   return data.timer.isBreak;
+}
+
+export function isPomodoroAlmostDone(): boolean {
+  const almostDoneTimeInSec: number =
+    data.defaults.timeInSec - data.defaults.timeBeforeBreakInSec;
+
+  const currentTimeDifferenceInSec: number =
+    data.defaults.timeInSec - data.timer.timeInSecRemaining;
+
+  return currentTimeDifferenceInSec === almostDoneTimeInSec;
+}
+
+export function getRemainingTimeString(): string {
+  const remainingTimeInMinutes: number = getRemainingTime() / 60;
+  const remainingTimeInSec: number = getRemainingTime() % 60;
+  let minutesString: string = "";
+  let secondsString: string = "";
+
+  if (remainingTimeInMinutes === 1 ) {
+    minutesString = `${remainingTimeInMinutes} minute`
+  } else if (remainingTimeInMinutes > 1) {
+    minutesString = `${remainingTimeInMinutes} minutes`
+  }
+
+  if (remainingTimeInSec === 1) {
+    secondsString = `${remainingTimeInSec} second`
+  } else if (remainingTimeInSec > 1) {
+    secondsString = `${remainingTimeInSec} seconds`
+  }
+
+  if (!minutesString) return secondsString;
+  if (!secondsString) return minutesString
+  return `${minutesString} and ${secondsString}`;
 }
