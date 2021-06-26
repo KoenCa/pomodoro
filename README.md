@@ -62,3 +62,4 @@ At the moment is a very basic timer that could be improved by:
 - Adding a notification sound for end of focus and break time.
 - Being able to set the amount of time for focus and breaks.
   - This could be stored in browser storage like
+    [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
