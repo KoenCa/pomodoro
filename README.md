@@ -63,3 +63,5 @@ At the moment is a very basic timer that could be improved by:
 - Being able to set the amount of time for focus and breaks.
   - This could be stored in browser storage like
     [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+- Log completed focus and break periods and also store it in browser storage.
+- Make it a PWA so that users can install it and use it without internet connection.
