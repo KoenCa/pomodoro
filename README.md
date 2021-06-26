@@ -1,5 +1,7 @@
 # Pomodoro timer
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/870f8b50-2503-4368-84d4-222d54e9885f/deploy-status)](https://app.netlify.com/sites/koen-pomodoro/deploys)
+
 A very simple pomodoro timer I made to split work in small tasks with small breaks
 in between. This can increase productivity by eliminating distractions during the
 focus time (25 minutes) and taking a small break (5 minutes) after each period of
@@ -53,3 +55,10 @@ To create a production build, run the following command:
 ```bash
 yarn build
 ```
+
+## What could be added?
+
+At the moment is a very basic timer that could be improved by:
+- Adding a notification sound for end of focus and break time.
+- Being able to set the amount of time for focus and breaks.
+  - This could be stored in browser storage like
